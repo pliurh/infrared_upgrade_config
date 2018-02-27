@@ -1,0 +1,35 @@
+{
+  "nodes": [
+    {
+      "name": "compute-0",
+      "mac": [
+        "a0:36:9f:8f:36:1c"
+      ],
+      "cpu": "12",
+      "memory": "131072",
+      "disk": "558",
+      "arch": "x864_64",
+      "pm_type": "pxe_ipmitool",
+      "pm_user": "FF_OS",
+      "pm_password": "FF_OS",
+      "pm_addr": "10.9.87.12",
+      "capabilities": "profile:compute,boot_option:local"
+    },
+    {
+      "name": "compute-1",
+      "mac": [
+        "a0:36:9f:8f:34:58"
+      ],
+      "cpu": "12",
+      "memory": "131072",
+      "disk": "558",
+      "arch": "x864_64",
+      "pm_type": "pxe_ipmitool",
+      "pm_user": "FF_OS",
+      "pm_password": "FF_OS",
+      "pm_addr": "10.9.87.13",
+      "capabilities": "profile:compute,boot_option:local"
+    }
+  ]
+}
+
