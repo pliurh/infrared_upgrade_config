@@ -14,6 +14,7 @@ PHYSICAL_NETWORK=$4
 ALLOCATION_POOL_START=$5
 ALLOCATION_POOL_END=$6
 COMPUTE_SUFFIX=$7
+PORT_TYPE=$8
 
 source /home/stack/overcloudrc
 
@@ -64,18 +65,32 @@ if [[ $SRIOV_NETWORK_RESULT -ne 0 ]]; then
     neutron subnet-create --name subnet_sriov_dpdk --disable-dhcp --gateway 10.0.10.1 --allocation-pool start=10.0.10.2,end=10.0.10.3 sriov_dpdk 10.0.10.1/24
 fi
 
-openstack port show sriov_dpdk_port1_vf
-SRIOV_PORT_1_RESULT=$?
-if [[ $SRIOV_PORT_1_RESULT -ne 0 ]]; then
-    openstack port create --network sriov_dpdk --vnic-type direct --fixed-ip ip-address=10.0.10.2 sriov_dpdk_port1_vf
-fi
+if [[ $PORT_TYPE -e "sriov" ]]; then
 
-openstack port show sriov_dpdk_port2_vf
-SRIOV_PORT_2_RESULT=$?
-if [[ $SRIOV_PORT_2_RESULT -ne 0 ]]; then
-    openstack port create --network sriov_dpdk --vnic-type direct --fixed-ip ip-address=10.0.10.3 sriov_dpdk_port2_vf
-fi
+    openstack port show sriov_dpdk_port1_vf
+    SRIOV_PORT_1_RESULT=$?
+    if [[ $SRIOV_PORT_1_RESULT -ne 0 ]]; then
+        openstack port create --network sriov_dpdk --vnic-type direct --fixed-ip ip-address=10.0.10.2 sriov_dpdk_port1_vf
+    fi
 
+    openstack port show sriov_dpdk_port2_vf
+    SRIOV_PORT_2_RESULT=$?
+    if [[ $SRIOV_PORT_2_RESULT -ne 0 ]]; then
+        openstack port create --network sriov_dpdk --vnic-type direct --fixed-ip ip-address=10.0.10.3 sriov_dpdk_port2_vf
+    fi
+elif [[ $PORT_TYPE -e "sriov" ]]; then
+    openstack port show sriov_dpdk_port1_vf
+    SRIOV_PORT_1_RESULT=$?
+    if [[ $SRIOV_PORT_1_RESULT -ne 0 ]]; then
+        openstack port create --network sriov_dpdk --fixed-ip ip-address=10.0.10.2 sriov_dpdk_port1_vf
+    fi
+
+    openstack port show sriov_dpdk_port2_vf
+    SRIOV_PORT_2_RESULT=$?
+    if [[ $SRIOV_PORT_2_RESULT -ne 0 ]]; then
+        openstack port create --network sriov_dpdk --fixed-ip ip-address=10.0.10.3 sriov_dpdk_port2_vf
+    fi
+fi
 # create image, file needs to previously exist
 openstack image show test_image
 TEST_IMAGE_RESULT=$?
