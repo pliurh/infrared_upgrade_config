@@ -30,7 +30,7 @@ parameter_defaults:
 
     NeutronNetworkType: 'vlan'
     NeutronBridgeMappings: 'dpdk:br-link,datacentre:br-ex'
-    NeutronNetworkVLANRanges: 'dpdk:215:219'
+    NeutronNetworkVLANRanges: 'dpdk:379:388'
 #    NeutronMechanismDrivers: "openvswitch,sriovnicswitch"
 #
     # Nova flavor to use.
