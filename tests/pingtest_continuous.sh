@@ -65,7 +65,7 @@ if [[ $SRIOV_NETWORK_RESULT -ne 0 ]]; then
     neutron subnet-create --name subnet_sriov_dpdk --disable-dhcp --gateway 10.0.10.1 --allocation-pool start=10.0.10.2,end=10.0.10.3 sriov_dpdk 10.0.10.1/24
 fi
 
-if [[ $PORT_TYPE -e "sriov" ]]; then
+if [[ $PORT_TYPE == "sriov" ]]; then
 
     openstack port show sriov_dpdk_port1_vf
     SRIOV_PORT_1_RESULT=$?
@@ -78,7 +78,7 @@ if [[ $PORT_TYPE -e "sriov" ]]; then
     if [[ $SRIOV_PORT_2_RESULT -ne 0 ]]; then
         openstack port create --network sriov_dpdk --vnic-type direct --fixed-ip ip-address=10.0.10.3 sriov_dpdk_port2_vf
     fi
-elif [[ $PORT_TYPE -e "sriov" ]]; then
+elif [[ $PORT_TYPE == "dpdk" ]]; then
     openstack port show sriov_dpdk_port1_vf
     SRIOV_PORT_1_RESULT=$?
     if [[ $SRIOV_PORT_1_RESULT -ne 0 ]]; then

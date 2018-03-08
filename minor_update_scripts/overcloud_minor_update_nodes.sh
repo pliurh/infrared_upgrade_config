@@ -21,6 +21,6 @@ bash ovs_upgrade/inventory/generate_inventory.sh
 if [[ "${SERVERS_TO_UPDATE}" == "" ]]; then
     ansible-playbook -i /home/stack/hosts ovs_upgrade.yml
 else
-    ansible-playbook -i /home/stack/hosts ovs_upgrade.yml --limit ${SERVERS_TO_UPDATE}
+    ansible-playbook -i /home/stack/hosts ovs_upgrade.yml -e dpdk_enabled=true --limit ${SERVERS_TO_UPDATE}
 fi
 
