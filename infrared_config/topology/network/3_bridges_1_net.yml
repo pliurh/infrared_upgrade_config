@@ -9,7 +9,7 @@
           name: br-all
           forward: bridge
           nic: em1
-          ip_address: 10.9.88.22
+          ip_address: 10.9.88.11
           netmask: 255.255.255.0
           renew: yes
       net3:
