@@ -61,7 +61,11 @@ openstack network show sriov_dpdk
 SRIOV_NETWORK_RESULT=$?
 
 if [[ $SRIOV_NETWORK_RESULT -ne 0 ]]; then
-    openstack network create sriov_dpdk --provider-network-type vlan --provider-physical-network $PHYSICAL_NETWORK --provider-segment $SEGMENTATION_ID
+    if [[ $PORT_TYPE == "dpdk" ]]; then
+       openstack network create sriov_dpdk --provider-network-type vlan --provider-physical-network $PHYSICAL_NETWORK
+    else
+       openstack network create sriov_dpdk --provider-network-type vlan --provider-physical-network $PHYSICAL_NETWORK --provider-segment $SEGMENTATION_ID
+    fi
     neutron subnet-create --name subnet_sriov_dpdk --disable-dhcp --gateway 10.0.10.1 --allocation-pool start=10.0.10.2,end=10.0.10.3 sriov_dpdk 10.0.10.1/24
 fi
 
@@ -145,11 +149,11 @@ if [[ $VM_2_RESULT -ne 0 ]]; then
     echo "I run $COMMAND_NOVA_2, id is $VM_UUID_2"
 
     until [[ "$(nova show ${VM_UUID_2} | awk '/ status/ {print $4}')" == "ACTIVE" ]]; do
-        sleep 1
+        sleep 10
     done
     openstack server add floating ip test-sriov_dpdk_vf_2 $LAST_FIP_2
 
-    sleep 5
+    sleep 15
     ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${LOGIN_USER}@${LAST_FIP_2} 'sudo ip addr add 10.0.10.3/24 dev eth1'
     ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${LOGIN_USER}@${LAST_FIP_2} 'sudo ip link set eth1 up'
 fi
@@ -158,5 +162,6 @@ fi
 ping -D ${LAST_FIP_1} &> /tmp/external_pingtest_output &
 
 # continuously ping test between vms and output to file
+sleep 30
 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${LOGIN_USER}@${LAST_FIP_1} "ping -D 10.0.10.3 &> /tmp/pingtest_output &"
 
